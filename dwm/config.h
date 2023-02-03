@@ -36,26 +36,26 @@ typedef struct {
 const char *spcmd1[] = {TERMINAL, "-n", "spterm", "-g", "120x34", NULL };
 const char *spcmd2[] = {TERMINAL, "-n", "spcalc", "-f", "monospace:size=16", "-g", "50x20", "-e", "bc", "-lq", NULL };
 static Sp scratchpads[] = {
-	/* name          cmd  */
+	/* name         cmd  */
 	{"spterm",      spcmd1},
 	{"spcalc",      spcmd2},
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	*/
-	/* class    instance      title       	 tags mask    isfloating   isterminal  noswallow  monitor */
-	{ "Gimp",     NULL,       NULL,       	    1 << 8,       0,           0,         0,        -1 },
-	{ TERMCLASS,  NULL,       NULL,       	    0,            0,           1,         0,        -1 },
-	{ NULL,       NULL,       "Event Tester",   0,            0,           0,         1,        -1 },
-	{ TERMCLASS,      "bg",        NULL,       	    1 << 7,       0,           1,         0,        -1 },
-	{ TERMCLASS,      "spterm",    NULL,       	    SPTAG(0),     1,           1,         0,        -1 },
-	{ TERMCLASS,      "spcalc",    NULL,       	    SPTAG(1),     1,           1,         0,        -1 },
+	/* class        instance    title       	    tags mask    isfloating   isterminal  noswallow  monitor */
+	{ "Gimp",       NULL,       NULL,       	    1 << 8,       0,           0,         0,        -1 },
+	{ TERMCLASS,    NULL,       NULL,       	    0,            0,           1,         0,        -1 },
+	{ NULL,         NULL,       "Event Tester",     0,            0,           0,         1,        -1 },
+	{ TERMCLASS,    "bg",       NULL,       	    1 << 7,       0,           1,         0,        -1 },
+	{ TERMCLASS,    "spterm",   NULL,       	    SPTAG(0),     1,           1,         0,        -1 },
+	{ TERMCLASS,    "spcalc",   NULL,       	    SPTAG(1),     1,           1,         0,        -1 },
 };
 
 /* layout(s) */
@@ -192,7 +192,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_r,		spawn,	    {.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },
 	{ MODKEY,			    XK_n,		spawn,		{.v = (const char*[]){ TERMINAL, "-e", "lvim", "-c", "~/notes", NULL } } },
 	{ MODKEY|ShiftMask,		XK_n,		spawn,		SHCMD(TERMINAL " -e newsboat ; pkill -RTMIN+6 dwmblocks") },
-	{ MODKEY,		        XK_Escape,	spawn,	    {.v = (const char*[]){ "sysact", NULL } } },
+	{ MODKEY,		        XK_Escape,	spawn,	    SHCMD("sysact"),
 	{ MODKEY,		        XK_grave,	spawn,	    {.v = (const char*[]){ "dmenuunicode", NULL } } },
 	{ MODKEY|ShiftMask,		XK_grave,	spawn,	    {.v = (const char*[]){ "passmenu", NULL } } },
 	{ MODKEY,			    XK_minus,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; kill -44 $(pidof dwmblocks)") },
@@ -226,7 +226,7 @@ static Key keys[] = {
 	{ MODKEY,			XK_F8,	        spawn,		{.v = (const char*[]){ "mw", "-Y", NULL } } },
 	{ MODKEY,			XK_F9,	        spawn,		{.v = (const char*[]){ "dmenumount", NULL } } },
 	{ MODKEY,			XK_F10,	        spawn,		{.v = (const char*[]){ "dmenuumount", NULL } } },
-	{ MODKEY,			XK_F11,	        spawn,		SHCMD("mpv --untimed --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
+	{ MODKEY,			XK_F11,	        spawn,		SHCMD("openwebcam") },
 	{ MODKEY,			XK_F12,	        spawn,		SHCMD("remaps") },
 	{ 0,				XK_Print,       spawn,		SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
 	{ ShiftMask,		XK_Print,       spawn,		{.v = (const char*[]){ "maimpick", NULL } } },
@@ -262,8 +262,8 @@ static Key keys[] = {
 	{ 0, XF86XK_TouchpadToggle,	    spawn,		SHCMD("(synclient | grep 'TouchpadOff.*1' && synclient TouchpadOff=0) || synclient TouchpadOff=1") },
 	{ 0, XF86XK_TouchpadOff,	    spawn,		{.v = (const char*[]){ "synclient", "TouchpadOff=1", NULL } } },
 	{ 0, XF86XK_TouchpadOn,		    spawn,		{.v = (const char*[]){ "synclient", "TouchpadOff=0", NULL } } },
-	{ 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "brightnessctl", "set", "+15", NULL } } },
-	{ 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "brightnessctl", "set", "15-", NULL } } },
+	{ 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "brightnessctl", "set", "+15%", NULL } } },
+	{ 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "brightnessctl", "set", "15%-", NULL } } },
 
 	/* { MODKEY|Mod4Mask,              XK_h,      incrgaps,       {.i = +1 } }, */
 	/* { MODKEY|Mod4Mask,              XK_l,      incrgaps,       {.i = -1 } }, */
