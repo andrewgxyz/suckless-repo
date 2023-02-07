@@ -17,12 +17,12 @@ static int smartgaps          = 0;        /* 1 means no outer gap when there is 
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
 static char *fonts[]          = { "ComicCodeLigatures:size=12", "NotoColorEmoji:pixelsize=12:antialias=true:autohint=true"  };
-static char normbgcolor[]           = "#1a1b26";
-static char normbordercolor[]       = "#1a1b26";
-static char normfgcolor[]           = "#C0CAF5";
-static char selfgcolor[]            = "#222222";
-static char selbordercolor[]        = "#C0CAF5";
-static char selbgcolor[]            = "#A9B1D6";
+static char normbgcolor[]     = "#1a1b26";
+static char normbordercolor[] = "#1a1b26";
+static char normfgcolor[]     = "#C0CAF5";
+static char selfgcolor[]      = "#222222";
+static char selbordercolor[]  = "#C0CAF5";
+static char selbgcolor[]      = "#A9B1D6";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
@@ -167,8 +167,8 @@ static Key keys[] = {
 	{ MODKEY,		        XK_x,	        incrgaps,       {.i = -3 } },
 	{ MODKEY,			    XK_g,		    setmfact,       {.f = -0.05} },
 	{ MODKEY,			    XK_semicolon,	setmfact,       {.f = +0.05} },
-	{ MODKEY,			    XK_d,	        spawn,          {.v = (const char*[]){ "dmenu_run", NULL } } },
-	{ MODKEY|ShiftMask,		XK_d,	        spawn,	        {.v = (const char*[]){ "passmenu", NULL } } },
+	{ MODKEY,			    XK_d,	        spawn,          {.v = (const char*[]){ "dmenu_run -l 14", NULL } } },
+	{ MODKEY|ShiftMask,		XK_d,	        spawn,	        {.v = (const char*[]){ "passmenu -l 14", NULL } } },
 
     // Layouts
 	{ MODKEY,			    XK_t,		setlayout,	{.v = &layouts[0]} }, /* tile */
@@ -300,14 +300,14 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        defaultgaps,	{0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkClientWin,		MODKEY,		Button4,	incrgaps,	{.i = +1} },
-	{ ClkClientWin,		MODKEY,		Button5,	incrgaps,	{.i = -1} },
+	{ ClkClientWin,		    MODKEY,		    Button4,	    incrgaps,	    {.i = +1} },
+	{ ClkClientWin,		    MODKEY,		    Button5,	    incrgaps,	    {.i = -1} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
-	{ ClkTagBar,		0,		Button4,	shiftview,	{.i = -1} },
-	{ ClkTagBar,		0,		Button5,	shiftview,	{.i = 1} },
-	{ ClkRootWin,		0,		Button2,	togglebar,	{0} },
+	{ ClkTagBar,		    0,	            Button4,        shiftview,      {.i = -1} },
+	{ ClkTagBar,	        0,	            Button5,        shiftview,      {.i = 1} },
+	{ ClkRootWin,	        0,	            Button2,        togglebar,      {0} },
 };
 
