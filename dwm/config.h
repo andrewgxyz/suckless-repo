@@ -16,7 +16,10 @@ static int swallowfloating    = 0;        /* 1 means swallow floating windows by
 static int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
-static char *fonts[]          = { "ComicCodeLigatures:size=12", "NotoColorEmoji:pixelsize=12:antialias=true:autohint=true"  };
+static char *fonts[]          = { 
+    "ComicCodeLigatures:size=16", 
+    "NotoColorEmoji:pixelsize=16:antialias=true:autohint=true"
+};
 static char normbgcolor[]     = "#1a1b26";
 static char normbordercolor[] = "#1a1b26";
 static char normfgcolor[]     = "#C0CAF5";
@@ -24,9 +27,9 @@ static char selfgcolor[]      = "#222222";
 static char selbordercolor[]  = "#C0CAF5";
 static char selbgcolor[]      = "#A9B1D6";
 static char *colors[][3] = {
-       /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+    /*               fg           bg           border   */
+    [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+    [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
 typedef struct {
@@ -100,6 +103,7 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define TERMCMD(cmd) { .v = (const char*[]){ TERMINAL, cmd, NULL } }
 
 /* commands */
 static const char *termcmd[]  = { TERMINAL, NULL };
@@ -108,25 +112,25 @@ static const char *termcmd[]  = { TERMINAL, NULL };
  * Xresources preferences to load at startup
  */
 ResourcePref resources[] = {
-		{ "color0",		STRING,	&normbordercolor },
-		{ "color8",		STRING,	&selbordercolor },
-		{ "color0",		STRING,	&normbgcolor },
-		{ "color4",		STRING,	&normfgcolor },
-		{ "color0",		STRING,	&selfgcolor },
-		{ "color4",		STRING,	&selbgcolor },
-		{ "borderpx",		INTEGER, &borderpx },
-		{ "snap",		INTEGER, &snap },
-		{ "showbar",		INTEGER, &showbar },
-		{ "topbar",		INTEGER, &topbar },
-		{ "nmaster",		INTEGER, &nmaster },
-		{ "resizehints",	INTEGER, &resizehints },
-		{ "mfact",		FLOAT,	&mfact },
-		{ "gappih",		INTEGER, &gappih },
-		{ "gappiv",		INTEGER, &gappiv },
-		{ "gappoh",		INTEGER, &gappoh },
-		{ "gappov",		INTEGER, &gappov },
-		{ "swallowfloating",	INTEGER, &swallowfloating },
-		{ "smartgaps",		INTEGER, &smartgaps },
+    { "borderpx",		    INTEGER,    &borderpx },
+    { "color0",	            STRING,     &normbgcolor },
+    { "color0",	            STRING,     &normbordercolor },
+    { "color0",	            STRING,     &selfgcolor },
+    { "color4",	            STRING,     &normfgcolor },
+    { "color4",	            STRING,     &selbgcolor },
+    { "color8",	            STRING,     &selbordercolor },
+    { "gappih",	            INTEGER,    &gappih },
+    { "gappiv",	            INTEGER,    &gappiv },
+    { "gappoh",	            INTEGER,    &gappoh },
+    { "gappov",		        INTEGER,    &gappov },
+    { "mfact",	            FLOAT,      &mfact },
+    { "nmaster",	        INTEGER,    &nmaster },
+    { "resizehints",        INTEGER,    &resizehints },
+    { "showbar",            INTEGER,    &showbar },
+    { "smartgaps",		    INTEGER,    &smartgaps },
+    { "snap",	            INTEGER,    &snap },
+    { "swallowfloating",	INTEGER,    &swallowfloating },
+    { "topbar",	            INTEGER,    &topbar },
 };
 
 #include <X11/XF86keysym.h>
@@ -167,8 +171,8 @@ static Key keys[] = {
 	{ MODKEY,		        XK_x,	        incrgaps,       {.i = -3 } },
 	{ MODKEY,			    XK_g,		    setmfact,       {.f = -0.05} },
 	{ MODKEY,			    XK_semicolon,	setmfact,       {.f = +0.05} },
-	{ MODKEY,			    XK_d,	        spawn,          {.v = (const char*[]){ "dmenu_run -l 14", NULL } } },
-	{ MODKEY|ShiftMask,		XK_d,	        spawn,	        {.v = (const char*[]){ "passmenu -l 14", NULL } } },
+	{ MODKEY,			    XK_d,	        spawn,          SHCMD("dmenu_run -l 14") },
+	{ MODKEY|ShiftMask,		XK_d,	        spawn,	        SHCMD("passmenu -l 14") },
 
     // Layouts
 	{ MODKEY,			    XK_t,		setlayout,	{.v = &layouts[0]} }, /* tile */
@@ -184,103 +188,86 @@ static Key keys[] = {
 
     // App Bindings
 	{ MODKEY,			    XK_Return,	spawn,		{.v = termcmd } },
-	{ MODKEY,			    XK_w,		spawn,	    {.v = (const char*[]){ BROWSER, NULL } } },
-	{ MODKEY|ShiftMask,		XK_w,		spawn,		{.v = (const char*[]){ "getbookmarks", NULL } } },
-	{ MODKEY,			    XK_e,		spawn,		SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks; rmdir ~/.abook") },
-	{ MODKEY|ShiftMask,		XK_e,		spawn,		SHCMD(TERMINAL " -e abook -C ~/.config/abook/abookrc --datafile ~/.config/abook/addressbook") },
-	{ MODKEY,			    XK_r,		spawn,	    {.v = (const char*[]){ TERMINAL, "-e", "lf", NULL } } },
-	{ MODKEY|ShiftMask,		XK_r,		spawn,	    {.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },
-	{ MODKEY,			    XK_n,		spawn,		{.v = (const char*[]){ TERMINAL, "-e", "lvim", "-c", "~/notes", NULL } } },
-	{ MODKEY|ShiftMask,		XK_n,		spawn,		SHCMD(TERMINAL " -e newsboat ; pkill -RTMIN+6 dwmblocks") },
-	{ MODKEY,		        XK_Escape,	spawn,	    SHCMD("sysact"),
-	{ MODKEY,		        XK_grave,	spawn,	    {.v = (const char*[]){ "dmenuunicode", NULL } } },
-	{ MODKEY|ShiftMask,		XK_grave,	spawn,	    {.v = (const char*[]){ "passmenu", NULL } } },
+	{ MODKEY,			    XK_w,		spawn,	    SHCMD(BROWSER) },
+	{ MODKEY|ShiftMask,		XK_w,		spawn,		SHCMD("getbookmark") },
+	{ MODKEY,			    XK_e,		spawn,		TERMCMD("neomutt ; pkill -RTMIN+12 dwmblocks; rmdir ~/.abook") },
+	{ MODKEY|ShiftMask,		XK_e,		spawn,		{ .v = (const char*[]){ TERMINAL, "abook", "-C", "~/.config/abook/abookrc", "--datafile", "~/.config/abook/addressbook", NULL }}},
+	{ MODKEY,			    XK_r,		spawn,	    TERMCMD("lf") },
+	{ MODKEY|ShiftMask,		XK_r,		spawn,	    TERMCMD("htop") },
+	{ MODKEY,	        	XK_n,		spawn,		{ .v = (const char*[]){ TERMINAL, "lvim", "-c", "MindOpenMain", NULL }}},
+	{ MODKEY|ShiftMask,		XK_n,		spawn,		TERMCMD("newsboat") },
+	{ MODKEY,		        XK_Escape,	spawn,	    SHCMD("sysact") },
+	{ MODKEY,		        XK_grave,	spawn,	    SHCMD("dmenuunicode") },
+	{ MODKEY|ShiftMask,		XK_grave,	spawn,	    SHCMD("passmenu") },
 	{ MODKEY,			    XK_minus,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY|ShiftMask,		XK_minus,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%-; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,			    XK_equal,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY|ShiftMask,		XK_equal,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%+; kill -44 $(pidof dwmblocks)") },
 
     // Media Controls
-	{ MODKEY,			    XK_p,		        spawn,		{.v = (const char*[]){ "mpc", "toggle", NULL } } },
+	{ MODKEY,			    XK_p,		        spawn,		SHCMD("mpc toggle") },
 	{ MODKEY|ShiftMask,		XK_p,		        spawn,		SHCMD("mpc pause; pauseallmpv") },
-	{ MODKEY,			    XK_bracketleft,		spawn,		{.v = (const char*[]){ "mpc", "seek", "-10", NULL } } },
-	{ MODKEY|ShiftMask,		XK_bracketleft,		spawn,		{.v = (const char*[]){ "mpc", "seek", "-60", NULL } } },
-	{ MODKEY,			    XK_bracketright,	spawn,		{.v = (const char*[]){ "mpc", "seek", "+10", NULL } } },
-	{ MODKEY|ShiftMask,		XK_bracketright,	spawn,		{.v = (const char*[]){ "mpc", "seek", "+60", NULL } } },
-	{ MODKEY,			    XK_comma,	        spawn,		{.v = (const char*[]){ "mpc", "prev", NULL } } },
-	{ MODKEY|ShiftMask,		XK_comma,           spawn,		{.v = (const char*[]){ "mpc", "seek", "0%", NULL } } },
-	{ MODKEY,			    XK_period,          spawn,		{.v = (const char*[]){ "mpc", "next", NULL } } },
-	{ MODKEY|ShiftMask,		XK_period,          spawn,		{.v = (const char*[]){ "mpc", "repeat", NULL } } },
-	{ MODKEY,			    XK_m,		        spawn,		{.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
+	{ MODKEY,			    XK_bracketleft,		spawn,		SHCMD("mpc seek -10") },
+	{ MODKEY|ShiftMask,		XK_bracketleft,		spawn,		SHCMD("mpc seek -60") },
+	{ MODKEY,			    XK_bracketright,	spawn,		SHCMD("mpc seek +10") },
+	{ MODKEY|ShiftMask,		XK_bracketright,	spawn,		SHCMD("mpc seek +60") },
+	{ MODKEY,			    XK_comma,	        spawn,		SHCMD("mpc prev") },
+	{ MODKEY|ShiftMask,		XK_comma,           spawn,		SHCMD("mpc seek 0%") },
+	{ MODKEY,			    XK_period,          spawn,		SHCMD("mpc next") },
+	{ MODKEY|ShiftMask,		XK_period,          spawn,		SHCMD("mpc repeat") },
+	{ MODKEY,			    XK_m,		        spawn,		TERMCMD("ncmpcpp") },
 	{ MODKEY|ShiftMask,		XK_m,		        spawn,		SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks)") },
 
 
     // Function keys
 	{ MODKEY,			XK_F1,	        spawn,		SHCMD("groff -mom /usr/local/share/dwm/larbs.mom -Tpdf | zathura -") },
-	{ MODKEY,			XK_F2,	        spawn,		{.v = (const char*[]){ "tutorialvids", NULL } } },
-	{ MODKEY,			XK_F3,	        spawn,		{.v = (const char*[]){ "displayselect", NULL } } },
-	{ MODKEY,			XK_F4,	        spawn,		SHCMD(TERMINAL " -e pulsemixer; kill -44 $(pidof dwmblocks)") },
+	{ MODKEY,			XK_F2,	        spawn,		SHCMD("tutorialvids") },
+	{ MODKEY,			XK_F3,	        spawn,		SHCMD("displayselect") },
+	{ MODKEY,			XK_F4,	        spawn,		TERMCMD("pulsemixer; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,			XK_F5,	        xrdb,		{.v = NULL } },
-	{ MODKEY,			XK_F6,	        spawn,		{.v = (const char*[]){ "torwrap", NULL } } },
-	{ MODKEY,			XK_F7,	        spawn,		{.v = (const char*[]){ "td-toggle", NULL } } },
-	{ MODKEY,			XK_F8,	        spawn,		{.v = (const char*[]){ "mw", "-Y", NULL } } },
-	{ MODKEY,			XK_F9,	        spawn,		{.v = (const char*[]){ "dmenumount", NULL } } },
-	{ MODKEY,			XK_F10,	        spawn,		{.v = (const char*[]){ "dmenuumount", NULL } } },
+	{ MODKEY,			XK_F6,	        spawn,		SHCMD("torwrap") },
+	{ MODKEY,			XK_F7,	        spawn,		SHCMD("td-toggle") },
+	{ MODKEY,			XK_F8,	        spawn,		SHCMD("mw -Y") },
+	{ MODKEY,			XK_F9,	        spawn,		SHCMD("dmenumount") },
+	{ MODKEY,			XK_F10,	        spawn,		SHCMD("dmenuumount") },
 	{ MODKEY,			XK_F11,	        spawn,		SHCMD("openwebcam") },
 	{ MODKEY,			XK_F12,	        spawn,		SHCMD("remaps") },
-	{ 0,				XK_Print,       spawn,		SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
-	{ ShiftMask,		XK_Print,       spawn,		{.v = (const char*[]){ "maimpick", NULL } } },
-	{ MODKEY,			XK_Print,       spawn,		{.v = (const char*[]){ "dmenurecord", NULL } } },
-	{ MODKEY|ShiftMask,	XK_Print,       spawn,		{.v = (const char*[]){ "dmenurecord", "kill", NULL } } },
-	{ MODKEY,			XK_Delete,  	spawn,		{.v = (const char*[]){ "dmenurecord", "kill", NULL } } },
+	{ 0,				XK_Print,       spawn,		SHCMD("maim ~/picx/screenshot/pic-full-$(date '+%y%m%d-%H%M-%S').png") },
+	{ ShiftMask,		XK_Print,       spawn,		SHCMD("maimpick") },
+	{ MODKEY,			XK_Print,       spawn,		SHCMD("dmenurecord") },
+	{ MODKEY|ShiftMask,	XK_Print,       spawn,		SHCMD("dmenurecord kill") },
+	{ MODKEY,			XK_Delete,  	spawn,		SHCMD("dmenurecord kill") },
 	{ MODKEY,			XK_Scroll_Lock,	spawn,		SHCMD("killall screenkey || screenkey &") },
 
     // Custom Key Inputs
 	{ 0, XF86XK_AudioMute,		    spawn,		SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; kill -44 $(pidof dwmblocks)") },
 	{ 0, XF86XK_AudioRaiseVolume,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%+; kill -44 $(pidof dwmblocks)") },
 	{ 0, XF86XK_AudioLowerVolume,	spawn,		SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; kill -44 $(pidof dwmblocks)") },
-	{ 0, XF86XK_AudioPrev,	        spawn,		{.v = (const char*[]){ "mpc", "prev", NULL } } },
-	{ 0, XF86XK_AudioNext,	        spawn,		{.v = (const char*[]){ "mpc",  "next", NULL } } },
-	{ 0, XF86XK_AudioPause,	        spawn,		{.v = (const char*[]){ "mpc", "pause", NULL } } },
-	{ 0, XF86XK_AudioPlay,	        spawn,		{.v = (const char*[]){ "mpc", "play", NULL } } },
-	{ 0, XF86XK_AudioStop,	        spawn,		{.v = (const char*[]){ "mpc", "stop", NULL } } },
-	{ 0, XF86XK_AudioRewind,        spawn,		{.v = (const char*[]){ "mpc", "seek", "-10", NULL } } },
-	{ 0, XF86XK_AudioForward,       spawn,		{.v = (const char*[]){ "mpc", "seek", "+10", NULL } } },
-	{ 0, XF86XK_AudioMedia,	        spawn,		{.v = (const char*[]){ TERMINAL, "-e", "ncmpcpp", NULL } } },
+	{ 0, XF86XK_AudioPrev,	        spawn,		SHCMD("mpc prev") },
+	{ 0, XF86XK_AudioNext,	        spawn,		SHCMD("mpc next") },
+	{ 0, XF86XK_AudioPause,	        spawn,		SHCMD("mpc pause") },
+	{ 0, XF86XK_AudioPlay,	        spawn,		SHCMD("mpc play") },
+	{ 0, XF86XK_AudioStop,	        spawn,		SHCMD("mpc stop") },
+	{ 0, XF86XK_AudioRewind,        spawn,		SHCMD("mpc seek -10") },
+	{ 0, XF86XK_AudioForward,       spawn,		SHCMD("mpc seek +10") },
+	{ 0, XF86XK_AudioMedia,	        spawn,		TERMCMD("ncmpcpp") },
 	{ 0, XF86XK_AudioMicMute,       spawn,		SHCMD("pactl set-source-mute @DEFAULT_SOURCE@ toggle") },
 	{ 0, XF86XK_Display,	        spawn,		SHCMD("displayselect") },
 	{ 0, XF86XK_Bluetooth,	        spawn,		{.v = (const char*[]){ "blueman-manager", NULL } } },
-	{ 0, XF86XK_Calculator,	        spawn,		{.v = (const char*[]){ TERMINAL, "-e", "bc", "-l", NULL } } },
+	{ 0, XF86XK_Calculator,	        spawn,		TERMCMD("bc -l") },
 	{ 0, XF86XK_Sleep,		        spawn,		{.v = (const char*[]){ "sudo", "-A", "zzz", NULL } } },
 	{ 0, XF86XK_WWW,		        spawn,		{.v = (const char*[]){ BROWSER, NULL } } },
 	{ 0, XF86XK_DOS,		        spawn,		{.v = termcmd } },
 	{ 0, XF86XK_ScreenSaver,        spawn,		SHCMD("slock & xset dpms force off; mpc pause; pauseallmpv") },
-	{ 0, XF86XK_TaskPane,	        spawn,		{.v = (const char*[]){ TERMINAL, "-e", "htop", NULL } } },
-	{ 0, XF86XK_Mail,		        spawn,		SHCMD(TERMINAL " -e neomutt ; pkill -RTMIN+12 dwmblocks") },
-	{ 0, XF86XK_MyComputer,		    spawn,		{.v = (const char*[]){ TERMINAL, "-e",  "lfub",  "/", NULL } } },
-	{ 0, XF86XK_Launch1,		    spawn,		{.v = (const char*[]){ "xset", "dpms", "force", "off", NULL } } },
+	{ 0, XF86XK_TaskPane,	        spawn,		TERMCMD("htop") },
+	{ 0, XF86XK_Mail,		        spawn,		TERMCMD("neomutt ; pkill -RTMIN+12 dwmblocks") },
+	{ 0, XF86XK_MyComputer,		    spawn,		TERMCMD("lfub /") },
+	{ 0, XF86XK_Launch1,		    spawn,		SHCMD("xset dpms force off") },
 	{ 0, XF86XK_TouchpadToggle,	    spawn,		SHCMD("(synclient | grep 'TouchpadOff.*1' && synclient TouchpadOff=0) || synclient TouchpadOff=1") },
-	{ 0, XF86XK_TouchpadOff,	    spawn,		{.v = (const char*[]){ "synclient", "TouchpadOff=1", NULL } } },
-	{ 0, XF86XK_TouchpadOn,		    spawn,		{.v = (const char*[]){ "synclient", "TouchpadOff=0", NULL } } },
-	{ 0, XF86XK_MonBrightnessUp,	spawn,		{.v = (const char*[]){ "brightnessctl", "set", "+15%", NULL } } },
-	{ 0, XF86XK_MonBrightnessDown,	spawn,		{.v = (const char*[]){ "brightnessctl", "set", "15%-", NULL } } },
-
-	/* { MODKEY|Mod4Mask,              XK_h,      incrgaps,       {.i = +1 } }, */
-	/* { MODKEY|Mod4Mask,              XK_l,      incrgaps,       {.i = -1 } }, */
-	/* { MODKEY|Mod4Mask|ShiftMask,    XK_h,      incrogaps,      {.i = +1 } }, */
-	/* { MODKEY|Mod4Mask|ShiftMask,    XK_l,      incrogaps,      {.i = -1 } }, */
-	/* { MODKEY|Mod4Mask|ControlMask,  XK_h,      incrigaps,      {.i = +1 } }, */
-	/* { MODKEY|Mod4Mask|ControlMask,  XK_l,      incrigaps,      {.i = -1 } }, */
-	/* { MODKEY|Mod4Mask|ShiftMask,    XK_0,      defaultgaps,    {0} }, */
-	/* { MODKEY,                       XK_y,      incrihgaps,     {.i = +1 } }, */
-	/* { MODKEY,                       XK_o,      incrihgaps,     {.i = -1 } }, */
-	/* { MODKEY|ControlMask,           XK_y,      incrivgaps,     {.i = +1 } }, */
-	/* { MODKEY|ControlMask,           XK_o,      incrivgaps,     {.i = -1 } }, */
-	/* { MODKEY|Mod4Mask,              XK_y,      incrohgaps,     {.i = +1 } }, */
-	/* { MODKEY|Mod4Mask,              XK_o,      incrohgaps,     {.i = -1 } }, */
-	/* { MODKEY|ShiftMask,             XK_y,      incrovgaps,     {.i = +1 } }, */
-	/* { MODKEY|ShiftMask,             XK_o,      incrovgaps,     {.i = -1 } }, */
-
+	{ 0, XF86XK_TouchpadOff,	    spawn,		SHCMD("synclient TouchpadOff=1") },
+	{ 0, XF86XK_TouchpadOn,		    spawn,		SHCMD("synclient TouchpadOff=0") },
+	{ 0, XF86XK_MonBrightnessUp,	spawn,		SHCMD("brightnessctl set +15%") },
+	{ 0, XF86XK_MonBrightnessDown,	spawn,		SHCMD("brightnessctl set 15%-") },
 };
 
 /* button definitions */
@@ -296,7 +283,7 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button5,        sigdwmblocks,   {.i = 5} },
 	{ ClkStatusText,        ShiftMask,      Button1,        sigdwmblocks,   {.i = 6} },
 #endif
-	{ ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD(TERMINAL " -e nvim ~/.local/src/dwmblocks/config.h") },
+	{ ClkStatusText,        ShiftMask,      Button3,        spawn,          TERMCMD("nvim ~/.local/src/dwmblocks/config.h") },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        defaultgaps,	{0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
