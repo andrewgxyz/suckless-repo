@@ -13,7 +13,7 @@ static unsigned int gappiv    = 10;       /* vert inner gap between windows */
 static unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
 static unsigned int gappov    = 30;       /* vert outer gap between windows and screen edge */
 static int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
-static int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
+static int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
 static char *fonts[]          = { 
@@ -45,7 +45,7 @@ static Sp scratchpads[] = {
 };
 
 /* tagging */
-static const char *tags[] = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -103,7 +103,7 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-#define TERMCMD(cmd) { .v = (const char*[]){ TERMINAL, cmd, NULL } }
+#define TERMCMD(cmd) { .v = (const char*[]){ TERMINAL, cmd, ";", "pkill", "dwmblocks", NULL } }
 
 /* commands */
 static const char *termcmd[]  = { TERMINAL, NULL };
@@ -190,11 +190,11 @@ static Key keys[] = {
 	{ MODKEY,			    XK_Return,	spawn,		{.v = termcmd } },
 	{ MODKEY,			    XK_w,		spawn,	    SHCMD(BROWSER) },
 	{ MODKEY|ShiftMask,		XK_w,		spawn,		SHCMD("getbookmark") },
-	{ MODKEY,			    XK_e,		spawn,		TERMCMD("neomutt ; pkill -RTMIN+12 dwmblocks; rmdir ~/.abook") },
+	{ MODKEY,			    XK_e,		spawn,		TERMCMD("neomutt") },
 	{ MODKEY|ShiftMask,		XK_e,		spawn,		{ .v = (const char*[]){ TERMINAL, "abook", "-C", "~/.config/abook/abookrc", "--datafile", "~/.config/abook/addressbook", NULL }}},
 	{ MODKEY,			    XK_r,		spawn,	    TERMCMD("lf") },
 	{ MODKEY|ShiftMask,		XK_r,		spawn,	    TERMCMD("htop") },
-	{ MODKEY,	        	XK_n,		spawn,		{ .v = (const char*[]){ TERMINAL, "lvim", "-c", "MindOpenMain", NULL }}},
+	{ MODKEY,	        	XK_n,		spawn,		{ .v = (const char*[]){ TERMINAL, "nb", NULL }}},
 	{ MODKEY|ShiftMask,		XK_n,		spawn,		TERMCMD("newsboat") },
 	{ MODKEY,		        XK_Escape,	spawn,	    SHCMD("sysact") },
 	{ MODKEY,		        XK_grave,	spawn,	    SHCMD("dmenuunicode") },
@@ -260,7 +260,7 @@ static Key keys[] = {
 	{ 0, XF86XK_DOS,		        spawn,		{.v = termcmd } },
 	{ 0, XF86XK_ScreenSaver,        spawn,		SHCMD("slock & xset dpms force off; mpc pause; pauseallmpv") },
 	{ 0, XF86XK_TaskPane,	        spawn,		TERMCMD("htop") },
-	{ 0, XF86XK_Mail,		        spawn,		TERMCMD("neomutt ; pkill -RTMIN+12 dwmblocks") },
+	{ 0, XF86XK_Mail,		        spawn,		TERMCMD("neomutt") },
 	{ 0, XF86XK_MyComputer,		    spawn,		TERMCMD("lfub /") },
 	{ 0, XF86XK_Launch1,		    spawn,		SHCMD("xset dpms force off") },
 	{ 0, XF86XK_TouchpadToggle,	    spawn,		SHCMD("(synclient | grep 'TouchpadOff.*1' && synclient TouchpadOff=0) || synclient TouchpadOff=1") },
