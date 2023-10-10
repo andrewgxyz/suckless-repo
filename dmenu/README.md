@@ -1,8 +1,7 @@
-# Luke's dmenu
+# Andrew's dmenu
 
 Extra stuff added to vanilla dmenu:
 
-- reads Xresources (ergo pywal compatible)
 - alpha patch, which importantly allows this build to be embedded in transparent st
 - can view color characters like emoji
 - `-P` for password mode: hide user input
