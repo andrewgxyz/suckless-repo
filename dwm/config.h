@@ -1,8 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
 /* Constants */
-#define TERMINAL "kitty"
-#define TERMCLASS "kitty"
+#define TERMINAL "st"
+#define TERMCLASS "st"
 #define BROWSER "brave"
 
 /* appearance */
@@ -16,6 +16,8 @@ static int swallowfloating    = 0;        /* 1 means swallow floating windows by
 static int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
+// static const int usealtbar    = 0;
+// static const char *altbarclass = "dwmblocks";
 static char *fonts[]          = { 
     "mononoki:size=16", 
     "NotoColorEmoji:pixelsize=16:antialias=true:autohint=true"
@@ -107,31 +109,31 @@ static const Layout layouts[] = {
 #define TERMCMD(cmd) { .v = (const char*[]){ TERMINAL, cmd, NULL } }
 
 /* commands */
-static const char *termcmd[]  = { TERMINAL, NULL };
+static const char *termcmd[]  = { TERMINAL, "tmux", NULL };
 
 /*
  * Xresources preferences to load at startup
  */
 ResourcePref resources[] = {
-    { "borderpx",		    INTEGER,    &borderpx },
-    { "color0",	            STRING,     &normbgcolor },
-    { "color0",	            STRING,     &normbordercolor },
-    { "color0",	            STRING,     &selfgcolor },
-    { "color4",	            STRING,     &normfgcolor },
-    { "color4",	            STRING,     &selbgcolor },
-    { "color8",	            STRING,     &selbordercolor },
-    { "gappih",	            INTEGER,    &gappih },
-    { "gappiv",	            INTEGER,    &gappiv },
-    { "gappoh",	            INTEGER,    &gappoh },
+    { "borderpx",		      INTEGER,    &borderpx },
+    { "color0",	          STRING,     &normbgcolor },
+    { "color0",	          STRING,     &normbordercolor },
+    { "color0",	          STRING,     &selfgcolor },
+    { "color4",	          STRING,     &normfgcolor },
+    { "color4",	          STRING,     &selbgcolor },
+    { "color8",	          STRING,     &selbordercolor },
+    { "gappih",	          INTEGER,    &gappih },
+    { "gappiv",	          INTEGER,    &gappiv },
+    { "gappoh",	          INTEGER,    &gappoh },
     { "gappov",		        INTEGER,    &gappov },
-    { "mfact",	            FLOAT,      &mfact },
+    { "mfact",	          FLOAT,      &mfact },
     { "nmaster",	        INTEGER,    &nmaster },
-    { "resizehints",        INTEGER,    &resizehints },
-    { "showbar",            INTEGER,    &showbar },
+    { "resizehints",      INTEGER,    &resizehints },
+    { "showbar",          INTEGER,    &showbar },
     { "smartgaps",		    INTEGER,    &smartgaps },
     { "snap",	            INTEGER,    &snap },
     { "swallowfloating",	INTEGER,    &swallowfloating },
-    { "topbar",	            INTEGER,    &topbar },
+    { "topbar",	          INTEGER,    &topbar },
 };
 
 #include <X11/XF86keysym.h>
@@ -153,13 +155,13 @@ static Key keys[] = {
 	TAGKEYS(XK_9,		8)
 	/* modifier             key         function    argument */
     // Windows
-	{ MODKEY,			    XK_q,		killclient,	    {0} },
-	{ MODKEY,			    XK_f,		togglefullscr,	{0} },
-	{ MODKEY,			    XK_s,		togglesticky,	{0} },
-	{ MODKEY,			    XK_o,		incnmaster,     {.i = +1 } },
-	{ MODKEY|ShiftMask,		XK_o,		incnmaster,     {.i = -1 } },
-	{ MODKEY,			    XK_space,	zoom,		    {0} },
-	{ MODKEY|ShiftMask,	    XK_space,	togglefloating,	{0} },
+	{ MODKEY,			      XK_q,	    killclient,	    {0} },
+	{ MODKEY,			      XK_f,	    togglefullscr,	{0} },
+	{ MODKEY,			      XK_s,	    togglesticky,	  {0} },
+	{ MODKEY,			      XK_o,	    incnmaster,     {.i = +1 } },
+	{ MODKEY|ShiftMask,	XK_o,	    incnmaster,     {.i = -1 } },
+	{ MODKEY,			      XK_space,	zoom,		        {0} },
+	{ MODKEY|ShiftMask, XK_space,	togglefloating,	{0} },
 
     // Workspace
 	{ MODKEY,			      XK_0,	        view,	          {.ui = ~0 } },
@@ -173,7 +175,7 @@ static Key keys[] = {
 	{ MODKEY,			      XK_g,		      setmfact,       {.f = -0.05} },
 	{ MODKEY,			      XK_semicolon,	setmfact,       {.f = +0.05} },
 	{ MODKEY,			      XK_d,	        spawn,          SHCMD("dmenu_run -l 14") },
-	{ MODKEY|ShiftMask,	XK_d,	        spawn,	        SHCMD("passmenu -l 14") },
+	{ MODKEY|ShiftMask,	XK_d,	        spawn,	        TERMCMD("kitty-projects") },
 
     // Layouts
 	{ MODKEY,			        XK_t,		setlayout,	{.v = &layouts[0]} }, /* tile */
@@ -196,8 +198,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_e,	      spawn,		{ .v = (const char*[]){ TERMINAL, "abook", "-C", "~/.config/abook/abookrc", "--datafile", "~/.config/abook/addressbook", NULL }}},
 	{ MODKEY,			        XK_r,	      spawn,	  TERMCMD("lf") },
 	{ MODKEY|ShiftMask,		XK_r,	      spawn,	  TERMCMD("htop") },
-	{ MODKEY,	        	  XK_n,	      spawn,		{ .v = (const char*[]){ TERMINAL, "nb", NULL }}},
-	{ MODKEY|ShiftMask,		XK_n,	      spawn,		{ .v = (const char*[]){ TERMINAL, "-e newsboat ; pkill -RTMIN+6 dwmblocks", NULL} }},
+	{ MODKEY,	        	  XK_n,	      spawn,		TERMCMD("kitty-notes")},
+	{ MODKEY|ShiftMask,		XK_n,	      spawn,		{ .v = (const char*[]){ TERMINAL, "newsboat", NULL} }},
+	{ MODKEY|ShiftMask,   XK_b,		    spawn,	  TERMCMD("kitty-book") },
 	{ MODKEY,		          XK_Escape,	spawn,	  SHCMD("sysact") },
 	{ MODKEY,		          XK_grave,   spawn,	  SHCMD("dmenuunicode") },
 	{ MODKEY|ShiftMask,		XK_grave,   spawn,	  SHCMD("passmenu") },
