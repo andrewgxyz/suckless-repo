@@ -19,8 +19,8 @@ static int topbar             = 1;        /* 0 means bottom bar */
 // static const int usealtbar    = 0;
 // static const char *altbarclass = "dwmblocks";
 static char *fonts[]          = { 
-    "LiberationMono:size=16", 
-    "NotoColorEmoji:pixelsize=16:antialias=true:autohint=true"
+    "CommitMono:size=16", 
+    "NotoColorEmoji:pixelsize=12:antialias=true:autohint=true"
 };
 static char normbgcolor[]     = "#1a1b26";
 static char normbordercolor[] = "#1a1b26";
@@ -38,6 +38,10 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
+
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+
 const char *spcmd1[] = {TERMINAL, "-n", "spterm", "-g", "120x34", NULL };
 const char *spcmd2[] = {TERMINAL, "-n", "spcalc", "-f", "monospace:size=16", "-g", "50x20", "-e", "bc", "-lq", NULL };
 static Sp scratchpads[] = {
@@ -109,7 +113,7 @@ static const Layout layouts[] = {
 #define TERMCMD(cmd) { .v = (const char*[]){ TERMINAL, cmd, NULL } }
 
 /* commands */
-static const char *termcmd[]  = { TERMINAL, "zellij", NULL };
+static const char *termcmd[]  = { TERMINAL, NULL };
 
 /*
  * Xresources preferences to load at startup
@@ -157,6 +161,7 @@ static Key keys[] = {
     // Windows
 	{ MODKEY,			      XK_q,	    killclient,	    {0} },
 	{ MODKEY,			      XK_f,	    togglefullscr,	{0} },
+	// { MODKEY|ShiftMask,	XK_f,		  togglescratch,	{.v = scratchpadcmd} },
 	{ MODKEY,			      XK_s,	    togglesticky,	  {0} },
 	{ MODKEY,			      XK_o,	    incnmaster,     {.i = +1 } },
 	{ MODKEY|ShiftMask,	XK_o,	    incnmaster,     {.i = -1 } },
@@ -186,7 +191,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_u,		setlayout,	{.v = &layouts[5]} }, /* monocle */
 	{ MODKEY,			        XK_i,		setlayout,	{.v = &layouts[6]} }, /* centeredmaster */
 	{ MODKEY|ShiftMask,		XK_i,		setlayout,	{.v = &layouts[7]} }, /* centeredfloatingmaster */
-	{ MODKEY|ShiftMask,		XK_f,		setlayout,	{.v = &layouts[8]} },
 	{ MODKEY,			        XK_b,		togglebar,	{0} },
 
     // App Bindings
@@ -230,7 +234,7 @@ static Key keys[] = {
 	{ MODKEY,		        XK_F3,	        spawn,		SHCMD("displayselect") },
 	{ MODKEY,		        XK_F4,	        spawn,		TERMCMD("pulsemixer; kill -44 $(pidof dwmblocks)") },
 	{ MODKEY,		        XK_F5,	        xrdb,		  {.v = NULL } },
-	{ MODKEY,		        XK_F6,	        spawn,		SHCMD("bc -l") },
+	{ MODKEY,		        XK_F6,	        spawn,		{.v = spcmd2} },
 	{ MODKEY,		        XK_F7,	        spawn,		SHCMD("td-toggle") },
 	{ MODKEY,		        XK_F8,	        spawn,		SHCMD("mw -Y") },
 	{ MODKEY,		        XK_F9,	        spawn,		SHCMD("dmenumount") },

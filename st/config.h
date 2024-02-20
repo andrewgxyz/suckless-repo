@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "LiberationMono:pixelsize=24:antialias=true:autohint=true";
+static char *font = "Courier Prime Sans:pixelsize=24:antialias=true:autohint=true";
 static char *font2[] = { "NotoColorEmoji:pixelsize=14:antialias=true:autohint=true" };
 static int borderpx = 2;
 
