@@ -1,8 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
 /* Constants */
-#define TERMINAL "st"
-#define TERMCLASS "st"
+#define TERMINAL "kitty"
+#define TERMCLASS "kitty"
 #define BROWSER "brave"
 
 /* appearance */
@@ -19,7 +19,7 @@ static int topbar             = 1;        /* 0 means bottom bar */
 // static const int usealtbar    = 0;
 // static const char *altbarclass = "dwmblocks";
 static char *fonts[]          = { 
-    "CommitMono:size=16", 
+    "Iosevka Extended:size=16", 
     "NotoColorEmoji:pixelsize=12:antialias=true:autohint=true"
 };
 static char normbgcolor[]     = "#1a1b26";
@@ -179,7 +179,7 @@ static Key keys[] = {
 	{ MODKEY,		        XK_x,	        incrgaps,       {.i = -3 } },
 	{ MODKEY,			      XK_g,		      setmfact,       {.f = -0.05} },
 	{ MODKEY,			      XK_semicolon,	setmfact,       {.f = +0.05} },
-	{ MODKEY,			      XK_d,	        spawn,          SHCMD("dmenu_run -l 14") },
+	{ MODKEY,			      XK_d,	        spawn,          SHCMD("j4-dmenu-desktop --dmenu='dmenu -l 14 -i'") },
 	{ MODKEY|ShiftMask,	XK_d,	        spawn,	        TERMCMD("fp") },
 
     // Layouts
